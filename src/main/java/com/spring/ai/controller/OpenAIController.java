@@ -7,15 +7,19 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ai")
 public class OpenAIController {
 
-    private ChatClient chatClient;
+    private final ChatClient chatClient;
     private ChatModel chatModel;
 
     public OpenAIController(OpenAiChatModel model, ChatClient.Builder builder){
@@ -33,6 +37,21 @@ public class OpenAIController {
         String response = chatClient.prompt(requestMessage)
                 .call()
                 .content();
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/recommend")
+    public ResponseEntity<String> recommendMovie(@RequestParam String type, @RequestParam String year, @RequestParam String language){
+        String strPrompt = """
+                I want to watch {type} movies with great rating.
+                The movies has to be released around the year {year} and in {language}. Suggest 3 movies along with its cast and run time.
+                """;
+        PromptTemplate template = new PromptTemplate(strPrompt);
+        Prompt prompt = template.create(Map.of("type", type, "year", year, "language", language));
+        String response = chatClient.prompt(prompt)
+                .call()
+                .content();
+
         return ResponseEntity.ok().body(response);
     }
 
