@@ -1,5 +1,7 @@
 package com.spring.ai.controller;
 
+import jakarta.annotation.Priority;
+import org.springframework.ai.anthropic.AnthropicChatModel;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
@@ -12,7 +14,9 @@ import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,13 +29,14 @@ public class OpenAIController {
     private final ChatClient chatClient;
     private ChatModel chatModel;
     @Autowired
+    @Qualifier("mistralAiEmbeddingModel")
     private EmbeddingModel embeddingModel;
 
-    public OpenAIController(OpenAiChatModel model, ChatClient.Builder builder){
+    public OpenAIController(@Qualifier("mistralAiChatModel") ChatModel model, @Qualifier("mistralChatClient") ChatClient builder){
         this.chatModel = model;
         ChatMemory memory = MessageWindowChatMemory.builder()
                 .build();
-        this.chatClient = builder
+        this.chatClient = builder.mutate()
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(memory).build())
                 .build();
 
