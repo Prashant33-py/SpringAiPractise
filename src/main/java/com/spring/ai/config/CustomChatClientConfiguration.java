@@ -17,13 +17,6 @@ public class CustomChatClientConfiguration {
     }
 
     @Bean
-    @Qualifier("anthropicChatClient")
-    public ChatClient anthropicChatClient(@Qualifier("anthropicChatModel") ChatModel anthropicChatModel){
-        return ChatClient.builder(anthropicChatModel)
-                .build();
-    }
-
-    @Bean
     @Qualifier("mistralChatClient")
     public ChatClient mistraChatClient(@Qualifier("mistralAiChatModel") ChatModel mistralAiChatModel){
         return ChatClient.builder(mistralAiChatModel)
