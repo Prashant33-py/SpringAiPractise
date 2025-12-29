@@ -1,4 +1,4 @@
-package com.spring.ai.config.util;
+package com.spring.ai.util;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.ai.reader.TextReader;
