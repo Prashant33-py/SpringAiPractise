@@ -20,9 +20,9 @@ public class DataInitializer {
     public void initializeData() {
         TextReader reader = new TextReader(new ClassPathResource("product_details.txt"));
         TokenTextSplitter splitter = TokenTextSplitter.builder()
-                .withChunkSize(50)
-                .withMinChunkSizeChars(20)
-                .withMinChunkLengthToEmbed(100)
+                .withChunkSize(60)
+                .withMinChunkSizeChars(50)
+                .withMinChunkLengthToEmbed(60)
                 .withMaxNumChunks(40)
                 .withKeepSeparator(false)
                 .build();

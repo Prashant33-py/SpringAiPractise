@@ -2,9 +2,12 @@ package com.spring.ai.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.document.Document;
@@ -94,6 +97,17 @@ public class OpenAIController {
 
     @PostMapping("/product-info")
     public List<Document> getProductInfo(@RequestParam String question){
-        return vectorStore.similaritySearch(question);
+        List<Document> documents = vectorStore.similaritySearch(question);
+        System.out.println(documents.getFirst().getFormattedContent());
+        return documents;
+    }
+
+    @PostMapping("/ask")
+    public String getAnswerUsingRAG(@RequestParam String question){
+        return chatClient
+                .prompt(question)
+                .advisors(QuestionAnswerAdvisor.builder(vectorStore).build())
+                .call()
+                .content();
     }
 }

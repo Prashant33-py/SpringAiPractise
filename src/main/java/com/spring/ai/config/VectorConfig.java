@@ -13,7 +13,7 @@ public class VectorConfig {
 
     @Bean
     public VectorStore getVectorStore(JdbcTemplate jdbcTemplate, @Qualifier("mistralAiEmbeddingModel") EmbeddingModel embeddingModel){
-        return PgVectorStore.builder(jdbcTemplate, embeddingModel).build();
+        return PgVectorStore.builder(jdbcTemplate, embeddingModel).dimensions(1024).build();
     }
 
 }
